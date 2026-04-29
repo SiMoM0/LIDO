@@ -1,0 +1,63 @@
+BootStrap: docker
+From: nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+
+%post
+    export TZ=Europe/Rome
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+    apt update -y && apt install -y \
+        python3.10 \
+        python3-pip \
+        git \
+        build-essential \
+        libsparsehash-dev \
+        cmake \
+        curl \
+        unzip \
+        nano \
+        sudo
+
+    # Ensure pip is python3.10's version
+    ln -sf /usr/bin/python3.10 /usr/bin/python
+    python -m pip install --upgrade pip
+
+    # Install PyTorch (compatible with CUDA 12.4)
+    pip install torch==2.4.0 torchvision==0.19.0 torchaudio==2.4.0 --index-url https://download.pytorch.org/whl/cu124
+
+    # Environment variables for building torchsparse
+    export TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6"
+    export CUDA_HOME=/usr/local/cuda
+    export FORCE_CUDA=1
+    export CMAKE_PREFIX_PATH=$(python -c 'import torch; print(torch.utils.cmake_prefix_path)')
+
+    # Clone and build torchsparse
+    cd /opt
+    git clone https://github.com/mit-han-lab/torchsparse.git
+    cd torchsparse
+    pip install -r requirements.txt
+    MAX_JOBS=4 python setup.py install
+
+    # Install additional dependencies
+    pip install \
+        pyyaml \
+        opencv-python-headless \
+        matplotlib \
+        tensorboard \
+        fvcore \
+        timm \
+        scipy \
+        strictyaml \
+        scikit-learn \
+        tqdm \
+        easydict
+
+%environment
+    export LC_ALL=C
+    export CUDA_HOME=/usr/local/cuda
+    export PYTHONUNBUFFERED=1
+    export FORCE_CUDA=1
+    export CMAKE_PREFIX_PATH=$(python -c 'import torch; print(torch.utils.cmake_prefix_path)')
+    export TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6"
+
+%runscript
+    exec python "$@"
