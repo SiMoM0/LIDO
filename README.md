@@ -26,6 +26,7 @@ We also introduce three new mixed real-synthetic OoD datasets for 3D LiDAR anoma
 
 ## News
 
+- **2026-05-05**: Pretrained models and OoD dataset are released.
 - **2026-04-29**: Code is released.
 - **2026-02-21**: LIDO is accepted to CVPR 2026.
 
@@ -57,7 +58,7 @@ Download nuScenes dataset from the [official website](https://nuscenes.org/nusce
 
 ### OoD Datasets
 
-Please refer to [DATA.md](./DATA.md) for the details to prepare SemanticKITTI-OoD, SemanticPOSS-OoD and nuScenes-OoD datasets.
+Please refer to [DATA.md](./DATA.md) for the details to download and prepare SemanticKITTI-OoD, SemanticPOSS-OoD and nuScenes-OoD datasets.
 
 ## Training
 
@@ -92,10 +93,10 @@ python infer.py --dataset /path/to/nuscenes-ood/ --data ./config/labels/nuscenes
 python infer.py --dataset /path/to/poss-ood/ --data ./config/labels/semantic-poss.yaml --config ./config/MinkowskiNet-semanticposs.yaml --log /path/to/predictions --model /path/to/modeldir/ --split train/valid/test [--save] [--eval] [--fp16]
 
 ### E.g. for STU and pretrained model
-# python infer.py --dataset /STU_dataset/ --data ./config/labels/stu.yaml --config ./config/MinkowskiNet-semantickitti.yaml --log ./stu_preds --model /path/to/modeldir/ --split valid --save --fp16
+# python infer.py --dataset /STU_dataset/ --data ./config/labels/stu.yaml --config ./config/MinkowskiNet-semantickitti.yaml --log ./stu_preds --model ./lido-stu/ --split valid --save --fp16
 
 ### E.g. for SemanticKITTI-OoD (multi)
-# python infer.py --dataset /kitti-ood-multi/ --data ./config/labels/semantic-kitti.yaml --config ./config/MinkowskiNet-semantickitti.yaml --log ./kitti_ood_preds --model /path/to/modeldir/ --split valid --save --fp16
+# python infer.py --dataset /kitti-ood-multi/ --data ./config/labels/semantic-kitti.yaml --config ./config/MinkowskiNet-semantickitti.yaml --log ./kitti_ood_preds --model ./lido-kitti/ --split valid --save --fp16
 ```
 
 Specify the `--save` argument to save both semantic predictions and anomaly scores to the log path. Use `--eval` to run also the semantic segmentation evaluation (be aware that this works only for the proposed OoD datasets as STU does not provide full semantic labels for the validation and test splits).
@@ -119,8 +120,9 @@ Pretrained models are available on [Hugging Face](https://huggingface.co/Simom0/
 
 - [x] Update README
 - [x] Release code
-- [ ] Upload models
-- [ ] Upload data
+- [x] Upload models
+- [x] Upload data
+- [ ] Pipeline for data generation
 
 ## Citation
 
